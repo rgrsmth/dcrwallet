@@ -55,6 +55,7 @@ service WalletService {
 	rpc LoadActiveDataFilters(LoadActiveDataFiltersRequest) returns (LoadActiveDataFiltersResponse);
 	rpc SignMessage (SignMessageRequest) returns (SignMessageResponse);
 	rpc ValidateAddress (ValidateAddressRequest) returns (ValidateAddressResponse);
+	rpc CommittedTickets (CommittedTicketsRequest) returns (CommittedTicketsResponse);
 }
 
 service WalletLoaderService {
@@ -866,4 +867,12 @@ message ValidateAddressResponse {
 	ScriptType script_type = 8;
 	bytes pay_to_addr_script = 9;
 	uint32 sigs_required = 10;
+}
+
+message CommittedTicketsRequest {
+	repeated bytes tickets = 1;
+}
+
+message CommittedTicketsResponse {
+	repeated bytes tickets = 1;
 }

@@ -1382,6 +1382,38 @@ func (s *walletServer) LoadActiveDataFilters(ctx context.Context, req *pb.LoadAc
 	return &pb.LoadActiveDataFiltersResponse{}, nil
 }
 
+func (s *walletServer) CommittedTickets(ctx context.Context, req *pb.CommittedTicketsRequest) (
+	*pb.CommittedTicketsResponse, error) {
+
+	// Translate [][]byte to []*chainhash.Hash
+	in := make([]*chainhash.Hash, 0, len(req.Tickets))
+	for _, v := range req.Tickets {
+		hash, err := chainhash.NewHash(v)
+		if err != nil {
+			return &pb.CommittedTicketsResponse{},
+				status.Error(codes.InvalidArgument,
+					"invalid hash "+hex.EncodeToString(v))
+		}
+		in = append(in, hash)
+	}
+
+	// Figure puot which tickets we own
+	out, err := s.wallet.CommittedTickets(in)
+	if err != nil {
+		return nil, translateError(err)
+	}
+
+	// Translate []*chainhash.Hash to [][]byte
+	ctr := &pb.CommittedTicketsResponse{
+		Tickets: make([][]byte, 0, len(out)),
+	}
+	for _, v := range out {
+		ctr.Tickets = append(ctr.Tickets, v[:])
+	}
+
+	return ctr, nil
+}
+
 func (s *walletServer) SignMessage(cts context.Context, req *pb.SignMessageRequest) (*pb.SignMessageResponse, error) {
 	var sig []byte
 

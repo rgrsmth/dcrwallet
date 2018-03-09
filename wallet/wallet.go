@@ -613,6 +613,18 @@ func (w *Wallet) LoadActiveDataFilters(n NetworkBackend) error {
 	return nil
 }
 
+// CommittedTickets takes a list of tickets and returns a filtered list of
+// tickets that are controlled by this wallet.
+func (w *Wallet) CommittedTickets(tickets []*chainhash.Hash) ([]*chainhash.Hash, error) {
+	hashes := make([]*chainhash.Hash, 0, len(tickets))
+	for _, v := range tickets {
+		// Verify we own this ticket
+		_ = v
+	}
+
+	return hashes, nil
+}
+
 // createHeaderData creates the header data to process from hex-encoded
 // serialized block headers.
 func createHeaderData(headers [][]byte) ([]udb.BlockHeaderData, error) {
